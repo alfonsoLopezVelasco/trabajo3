@@ -1,9 +1,7 @@
 package etsisi.ems.trabajo3.banco;
 
-import java.util.Date;
 import java.util.Vector;
 import java.time.LocalDate;
-import java.time.ZoneId;
 
 public class Credito {
 	public Cuenta mCuentaAsociada;
@@ -28,6 +26,8 @@ public class Credito {
 		mCCV = ccv;
 	}
 
+	
+	//Revisar que constructor es mas adecuado
 	public Credito(String numero, String titular, LocalDate fechacaducidad, int tipo, int marcainternacional,
 			String nombreentidad, int ccv) {
 		mNumero = numero;
@@ -60,11 +60,11 @@ public class Credito {
 		return credito;
 	}
 
-	public void setCuenta(Cuenta c) {
-		mCuentaAsociada = c;
+	public void setCuenta(Cuenta cuenta) {
+		mCuentaAsociada = cuenta;
 	}
 
-	public void retirar(double x) throws Exception {
+	public void retirar(double importe) throws IllegalArgumentException {
 		double comisiontarifa;
 		switch (mMarcaInternacional) {
 		case 1: // mastercard
@@ -85,57 +85,37 @@ public class Credito {
 		}
 
 		// Añadimos una comisión de un 5% o 3% o 2%, mínimo de 3 euros.
-		double comision = (x * comisiontarifa < 3.0 ? 3 : x * comisiontarifa);
-		if (x > getCreditoDisponible())
-			throw new Exception("Crédito insuficiente");
-		Movimiento m = new Movimiento();
-		m.setConcepto("Retirada en cuenta asociada (cajero automático)");
-		m.setImporte(x + comision);
-		Date date = new Date();
-		LocalDate fecha = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-		m.setFecha(fecha);
-		mMovimientos.addElement(m);
+		double comision = (importe * comisiontarifa < 3.0 ? 3 : importe * comisiontarifa);
+		if (importe > getCreditoDisponible())
+			throw new IllegalArgumentException("Crédito insuficiente");
+		Movimiento movimiento = new Movimiento("Retirada en cuenta asociada (cajero automático)", (importe + comision));
+		mMovimientos.addElement(movimiento);
 	}
 
 	// traspaso tarjeta a cuenta
-	public void ingresar(double x) throws Exception {
-		// Movimiento m=new Movimiento();
-		// m.setConcepto("Ingreso en cuenta asociada (cajero automático)");
-		// m.setImporte(x);
-		// mMovimientos.addElement(m);
+	public void ingresar(double importe) throws IllegalArgumentException {
+		double comision = (importe * 0.05 < 3.0 ? 3 : importe * 0.05); // Añadimos una comisión de un 5%, mínimo de 3 euros.
+		if (importe > getCreditoDisponible())
+			throw new IllegalArgumentException("Crédito insuficiente");
+		Movimiento movimiento = new Movimiento("Traspaso desde tarjeta a cuenta", importe);
+		mMovimientos.addElement(movimiento);
 
-		double comision = (x * 0.05 < 3.0 ? 3 : x * 0.05); // Añadimos una comisión de un 5%, mínimo de 3 euros.
-		if (x > getCreditoDisponible())
-			throw new Exception("Crédito insuficiente");
-		Movimiento m = new Movimiento();
-		m.setConcepto("Traspaso desde tarjeta a cuenta");
-		m.setImporte(x);
-		Date date = new Date();
-		LocalDate fecha = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-		m.setFecha(fecha);
-		mMovimientos.addElement(m);
-
-		mCuentaAsociada.ingresar("Traspaso desde tarjeta a cuenta", x);
+		mCuentaAsociada.ingresar("Traspaso desde tarjeta a cuenta", importe);
 		mCuentaAsociada.retirar("Comision Traspaso desde tarjeta a cuenta", comision);
 	}
 
-	public void pagoEnEstablecimiento(String datos, double x) throws Exception {
-		Movimiento m = new Movimiento();
-		m.setConcepto("Compra a crédito en: " + datos);
-		m.setImporte(x);
-		Date date = new Date();
-		LocalDate fecha = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-		m.setFecha(fecha);
-		mMovimientos.addElement(m);
+	public void pagoEnEstablecimiento(String datos, double importe) throws Exception {
+		Movimiento movimiento = new Movimiento(("Compra a credito en : " + datos) , importe);
+		mMovimientos.addElement(movimiento);
 	}
 
 	public double getSaldo() {
-		double r = 0.0;
+		double saldo = 0.0;
 		for (int i = 0; i < this.mMovimientos.size(); i++) {
-			Movimiento m = (Movimiento) mMovimientos.elementAt(i);
-			r += m.getImporte();
+			Movimiento movimiento = (Movimiento) mMovimientos.elementAt(i);
+			saldo += movimiento.getImporte();
 		}
-		return r;
+		return saldo;
 	}
 
 	public double getCreditoDisponible() {
@@ -144,22 +124,18 @@ public class Credito {
 
 	public void liquidar(int mes, int anyo) throws Exception {
 
-		double r = 0.0;
+		double resultado = 0.0;
 		for (int i = 0; i < this.mMovimientos.size(); i++) {
-			Movimiento m = (Movimiento) mMovimientos.elementAt(i);
-			if (m.getFecha().getMonthValue() == mes && m.getFecha().getYear() == anyo && !m.isLiquidado())
-				r += m.getImporte();
-			m.setLiquidado(true);
+			Movimiento movimiento = (Movimiento) mMovimientos.elementAt(i);
+			if (movimiento.getFecha().getMonthValue() == mes && movimiento.getFecha().getYear() == anyo && !movimiento.isLiquidado())
+				resultado += movimiento.getImporte();
+			movimiento.setLiquidado(true);
 		}
 
-		if (r != 0) {
-			Movimiento liq = new Movimiento();
-			liq.setConcepto("Liquidación de operaciones tarj. crédito, " + (mes) + " de " + (anyo));
-			liq.setImporte(-r);
-			Date date = new Date();
-			LocalDate fecha = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-			liq.setFecha(fecha);
-			mCuentaAsociada.addMovimiento(liq);
+		if (resultado != 0) {
+			String concepto = "Liquidación de operaciones tarj. crédito, " + mes + " de " + anyo;
+			Movimiento liquidacion = new Movimiento(concepto, -resultado);
+			mCuentaAsociada.addMovimiento(liquidacion);
 		}
 	}
 

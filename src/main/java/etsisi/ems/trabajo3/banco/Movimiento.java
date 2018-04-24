@@ -14,6 +14,14 @@ public class Movimiento {
 		setLiquidado(false); //lo necesito para los movimientos de las tarjetas de crédito
 
 	}
+	
+	public Movimiento(String concepto, double importe) {
+		setConcepto("Traspaso desde tarjeta a cuenta");
+		setImporte(importe);
+		Date date = new Date();
+		LocalDate fecha = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		setFecha(fecha);
+	}
 
 	public double getImporte() {
 		return mImporte;

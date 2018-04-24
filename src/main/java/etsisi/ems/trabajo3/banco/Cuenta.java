@@ -16,9 +16,9 @@ public class Cuenta {
 		mMovimientos = new Vector<Movimiento>();
 	}
 
-	public void ingresar(double x) throws Exception {
+	public void ingresar(double x) throws IllegalArgumentException {
 		if (x <= 0)
-			throw new Exception("No se puede ingresar una cantidad negativa");
+			throw new IllegalArgumentException("No se puede ingresar una cantidad negativa");
 		Movimiento m = new Movimiento();
 		m.setConcepto("Ingreso en efectivo");
 		m.setImporte(x);
@@ -28,11 +28,11 @@ public class Cuenta {
 		this.mMovimientos.addElement(m);
 	}
 
-	public void retirar(double x) throws Exception {
+	public void retirar(double x) throws IllegalArgumentException {
 		if (x <= 0)
-			throw new Exception("No se puede retirar una cantidad negativa");
+			throw new IllegalArgumentException("No se puede retirar una cantidad negativa");
 		if (getSaldo() < x)
-			throw new Exception("Saldo insuficiente");
+			throw new IllegalArgumentException("Saldo insuficiente");
 		Movimiento m = new Movimiento();
 		m.setConcepto("Retirada de efectivo");
 		m.setImporte(-x);
@@ -43,9 +43,9 @@ public class Cuenta {
 
 	}
 
-	public void ingresar(String concepto, double x) throws Exception {
+	public void ingresar(String concepto, double x) throws IllegalArgumentException {
 		if (x <= 0)
-			throw new Exception("No se puede ingresar una cantidad negativa");
+			throw new IllegalArgumentException("No se puede ingresar una cantidad negativa");
 		Movimiento m = new Movimiento();
 		m.setConcepto(concepto);
 		m.setImporte(x);
@@ -55,11 +55,11 @@ public class Cuenta {
 		this.mMovimientos.addElement(m);
 	}
 
-	public void retirar(String concepto, double x) throws Exception {
+	public void retirar(String concepto, double x) throws IllegalArgumentException {
 		if (x <= 0)
-			throw new Exception("No se puede retirar una cantidad negativa");
+			throw new IllegalArgumentException("No se puede retirar una cantidad negativa");
 		if (getSaldo() < x)
-			throw new Exception("Saldo insuficiente");
+			throw new IllegalArgumentException("Saldo insuficiente");
 		Movimiento m = new Movimiento();
 		m.setConcepto(concepto);
 		m.setImporte(-x);
