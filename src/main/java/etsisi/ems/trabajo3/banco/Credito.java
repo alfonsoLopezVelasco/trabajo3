@@ -3,12 +3,9 @@ package etsisi.ems.trabajo3.banco;
 import java.util.Vector;
 import java.time.LocalDate;
 
-public class Credito {
-	public Cuenta mCuentaAsociada;
+public class Credito extends Tarjeta{
 	protected double mCredito;
 	protected Vector<Movimiento> mMovimientos;
-	String mNumero, mTitular;
-	LocalDate mFechaDeCaducidad;
 	public String mNombreEntidad;
 	public int mCCV;
 	public int mMarcaInternacional; // mastercard, maestro, visa ...
@@ -16,9 +13,7 @@ public class Credito {
 
 	public Credito(String numero, String titular, LocalDate fechacaducidad, double credito, int marcainternacional,
 			String nombreentidad, int ccv) {
-		mNumero = numero;
-		mTitular = titular;
-		mFechaDeCaducidad = fechacaducidad;
+		super(titular, fechacaducidad, numero);
 		mCredito = credito;
 		mMovimientos = new Vector<Movimiento>();
 		mMarcaInternacional = marcainternacional;
@@ -30,9 +25,7 @@ public class Credito {
 	//Revisar que constructor es mas adecuado
 	public Credito(String numero, String titular, LocalDate fechacaducidad, int tipo, int marcainternacional,
 			String nombreentidad, int ccv) {
-		mNumero = numero;
-		mTitular = titular;
-		mFechaDeCaducidad = fechacaducidad;
+		super(titular, fechacaducidad, numero);
 		mTipo = tipo;
 		mCredito = calcularCredito(mTipo);
 		mMovimientos = new Vector<Movimiento>();
@@ -58,10 +51,6 @@ public class Credito {
 			break;
 		}
 		return credito;
-	}
-
-	public void setCuenta(Cuenta cuenta) {
-		mCuentaAsociada = cuenta;
 	}
 
 	public void retirar(double importe) throws IllegalArgumentException {
