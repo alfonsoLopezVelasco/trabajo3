@@ -19,7 +19,7 @@ public class Cuenta {
 	public void ingresar(double x) throws IllegalArgumentException {
 		if (x <= 0)
 			throw new IllegalArgumentException("No se puede ingresar una cantidad negativa");
-                Movimiento m = new Movimiento("Ingreso en efectivo",x);
+		Movimiento m = new Movimiento("Ingreso en efectivo", x);
 		this.mMovimientos.addElement(m);
 	}
 
@@ -28,8 +28,8 @@ public class Cuenta {
 			throw new IllegalArgumentException("No se puede retirar una cantidad negativa");
 		if (getSaldo() < x)
 			throw new IllegalArgumentException("Saldo insuficiente");
-                
-		Movimiento m = new Movimiento("Retirada de efectivo",-x);
+
+		Movimiento m = new Movimiento("Retirada de efectivo", -x);
 		this.mMovimientos.addElement(m);
 
 	}
@@ -37,7 +37,7 @@ public class Cuenta {
 	public void ingresar(String concepto, double x) throws IllegalArgumentException {
 		if (x <= 0)
 			throw new IllegalArgumentException("No se puede ingresar una cantidad negativa");
-		Movimiento m = new Movimiento(concepto,x);
+		Movimiento m = new Movimiento(concepto, x);
 		this.mMovimientos.addElement(m);
 	}
 
@@ -46,8 +46,8 @@ public class Cuenta {
 			throw new IllegalArgumentException("No se puede retirar una cantidad negativa");
 		if (getSaldo() < x)
 			throw new IllegalArgumentException("Saldo insuficiente");
-		
-                Movimiento m = new Movimiento(concepto,-x);            
+
+		Movimiento m = new Movimiento(concepto, -x);
 		this.mMovimientos.addElement(m);
 	}
 
@@ -62,5 +62,9 @@ public class Cuenta {
 
 	public void addMovimiento(Movimiento m) {
 		mMovimientos.addElement(m);
+	}
+
+	public Vector<Movimiento> buscarMovimientos(int mes, int anyo) {
+		return GestorBusqueda.buscarMovimientos(mMovimientos, mes, anyo);
 	}
 }

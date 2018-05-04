@@ -3,6 +3,7 @@ package etsisi.ems.trabajo3.banco;
 import java.util.Vector;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class Credito extends Tarjeta{
@@ -109,19 +110,25 @@ public class Credito extends Tarjeta{
 		return mCredito - getSaldo();
 	}
 
-	public void liquidar(int mes, int anyo) throws Exception {
-
+	private double obtenerImporteALiquidar(int mes, int anyo) {
 		double resultado = 0.0;
-		for (int i = 0; i < this.mMovimientos.size(); i++) {
-			Movimiento movimiento = (Movimiento) mMovimientos.elementAt(i);
-			if (movimiento.getFecha().getMonthValue() == mes && movimiento.getFecha().getYear() == anyo && !movimiento.isLiquidado())
+		Iterator <Movimiento> iterador = mMovimientos.iterator();
+		while(iterador.hasNext()) {
+			Movimiento movimiento = iterador.next();
+			if (movimiento.getFecha().getMonthValue() == mes && movimiento.getFecha().getYear() == anyo
+					&& !movimiento.isLiquidado())
 				resultado += movimiento.getImporte();
 			movimiento.setLiquidado(true);
 		}
+		return resultado;
 
-		if (resultado != 0) {
+	}
+
+	public void liquidar(int mes, int anyo) throws IllegalArgumentException {
+		double importe = obtenerImporteALiquidar(mes, anyo);
+		if (importe != 0) {
 			String concepto = "Liquidación de operaciones tarj. crédito, " + mes + " de " + anyo;
-			Movimiento liquidacion = new Movimiento(concepto, -resultado);
+			Movimiento liquidacion = new Movimiento(concepto, -importe);
 			mCuentaAsociada.addMovimiento(liquidacion);
 		}
 	}
@@ -130,7 +137,19 @@ public class Credito extends Tarjeta{
 	// durante el mes/año de liquidación que consiste en lo siguiente:
 	// los gastos totales, incluida una comisión de 12%, se dividen en 3 cuotas a
 	// pagar en los 3 meses siguientes
-	public void liquidarPlazos(int mes, int anyo) throws Exception {
-		// TODO
+	public void liquidarPlazos(int mes, int anyo) throws IllegalArgumentException {
+		double importe = obtenerImporteALiquidar(mes, anyo) * 1.12;
+		if (importe != 0) {
+			for (int i = 0; i < 3; i++) {
+				if(mes==12) {
+					mes=1;
+					anyo++;
+				}else 
+					mes++;
+				String concepto = "Liquidación de operaciones tarj. crédito, " + mes + " de " + anyo;
+				Movimiento liquidacion = new Movimiento(concepto, -importe);
+				mCuentaAsociada.addMovimiento(liquidacion);
+			}
+		}
 	}
 }
