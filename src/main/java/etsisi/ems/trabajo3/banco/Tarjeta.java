@@ -5,12 +5,12 @@ import java.time.ZoneId;
 import java.util.Date;
 
 public abstract class Tarjeta {
-	private Cuenta mCuentaAsociada;
+	protected Cuenta mCuentaAsociada;
 	private String mNumero;
 	private String mTitular;
 	private LocalDate mFechaDeCaducidad;
 	
-	public void Tarjeta(String titular, LocalDate mFechaDeCaducidad, String mNumero) {
+	public Tarjeta(String titular, LocalDate mFechaDeCaducidad, String mNumero) {
 		this.mTitular = titular;
 		this.mFechaDeCaducidad = mFechaDeCaducidad;
 		this.mNumero = mNumero;
@@ -20,11 +20,11 @@ public abstract class Tarjeta {
 		this.mCuentaAsociada = c;
 	}
 	
-	public abstract void retirar(double importe);
+	public abstract void retirar(double importe) throws Exception;
 	
-	public abstract void ingresar(double importe);
+	public abstract void ingresar(double importe) throws Exception;
 	
-	public abstract void pagoEnEstablecimiento(String datos, double importe);
+	public abstract void pagoEnEstablecimiento(String datos, double importe) throws Exception;
 	
 	public abstract double getSaldo();		
 	
