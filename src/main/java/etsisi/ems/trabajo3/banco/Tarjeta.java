@@ -10,7 +10,7 @@ public abstract class Tarjeta {
 	private String mTitular;
 	private LocalDate mFechaDeCaducidad;
 	
-	public void Tarjeta(String titular, String mFechaDeCaducidad, String mNumero) {
+	public void Tarjeta(String titular, LocalDate mFechaDeCaducidad, String mNumero) {
 		this.mTitular = titular;
 		this.mFechaDeCaducidad = mFechaDeCaducidad;
 		this.mNumero = mNumero;
