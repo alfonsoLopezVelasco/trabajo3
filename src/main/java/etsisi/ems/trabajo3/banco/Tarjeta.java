@@ -1,8 +1,6 @@
 package etsisi.ems.trabajo3.banco;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Date;
 
 public abstract class Tarjeta {
 	protected Cuenta mCuentaAsociada;
