@@ -10,6 +10,7 @@ public class Credito extends Tarjeta{
 	public int mCCV;
 	public int mMarcaInternacional; // mastercard, maestro, visa ...
 	public int mTipo; // oro platino clásica
+        public final int comisionMinima = 3;
 
 	public Credito(String numero, String titular, LocalDate fechacaducidad, double credito, int marcainternacional,
 			String nombreentidad, int ccv) {
@@ -74,7 +75,7 @@ public class Credito extends Tarjeta{
 		}
 
 		// Añadimos una comisión de un 5% o 3% o 2%, mínimo de 3 euros.
-		double comision = (importe * comisiontarifa < 3.0 ? 3 : importe * comisiontarifa);
+		double comision = (importe * comisiontarifa < comisionMinima ? comisionMinima : importe * comisiontarifa);
 		if (importe > getCreditoDisponible())
 			throw new IllegalArgumentException("Crédito insuficiente");
 		Movimiento movimiento = new Movimiento("Retirada en cuenta asociada (cajero automático)", (importe + comision));
@@ -83,7 +84,7 @@ public class Credito extends Tarjeta{
 
 	// traspaso tarjeta a cuenta
 	public void ingresar(double importe) throws IllegalArgumentException {
-		double comision = (importe * 0.05 < 3.0 ? 3 : importe * 0.05); // Añadimos una comisión de un 5%, mínimo de 3 euros.
+		double comision = (importe * 0.05 < comisionMinima ? comisionMinima : importe * 0.05); // Añadimos una comisión de un 5%, mínimo de 3 euros.
 		if (importe > getCreditoDisponible())
 			throw new IllegalArgumentException("Crédito insuficiente");
 		Movimiento movimiento = new Movimiento("Traspaso desde tarjeta a cuenta", importe);
