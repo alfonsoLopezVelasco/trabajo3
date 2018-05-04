@@ -2,6 +2,8 @@ package etsisi.ems.trabajo3.banco;
 
 import java.util.Vector;
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Credito extends Tarjeta{
 	protected double mCredito;
@@ -10,7 +12,14 @@ public class Credito extends Tarjeta{
 	public int mCCV;
 	public int mMarcaInternacional; // mastercard, maestro, visa ...
 	public int mTipo; // oro platino clásica
-        public final int comisionMinima = 3;
+        public final int comisionMinima = 3;        
+        private static final Map<MarcaInternacional,Double> COMISIONES = new HashMap<MarcaInternacional,Double>();
+        static{
+            COMISIONES.put(MarcaInternacional.MasterCard,0.05);
+            COMISIONES.put(MarcaInternacional.Maestro,0.05);
+            COMISIONES.put(MarcaInternacional.VisaClasica,0.03);
+            COMISIONES.put(MarcaInternacional.VisaElectron,0.02);
+        }
 
 	public Credito(String numero, String titular, LocalDate fechacaducidad, double credito, int marcainternacional,
 			String nombreentidad, int ccv) {
@@ -55,25 +64,13 @@ public class Credito extends Tarjeta{
 	}
 
 	public void retirar(double importe) throws IllegalArgumentException {
-		double comisiontarifa;
-		switch (mMarcaInternacional) {
-		case 1: // mastercard
-			comisiontarifa = 0.05;
-			break;
-		case 2: // maestro
-			comisiontarifa = 0.05;
-			break;
-		case 3: // visa clásica
-			comisiontarifa = 0.03;
-			break;
-		case 4: // visa electrón
-			comisiontarifa = 0.02;
-			break;
-		default:
-			comisiontarifa = 0.05;
-			break;
-		}
-
+		Double comisiontarifa;
+                
+                comisiontarifa = COMISIONES.get(mMarcaInternacional);
+                if(comisiontarifa == null){
+                    comisiontarifa = 0.05;
+                }
+                
 		// Añadimos una comisión de un 5% o 3% o 2%, mínimo de 3 euros.
 		double comision = (importe * comisiontarifa < comisionMinima ? comisionMinima : importe * comisiontarifa);
 		if (importe > getCreditoDisponible())
