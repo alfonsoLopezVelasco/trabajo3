@@ -13,14 +13,20 @@ public class Credito extends Tarjeta{
 	public int mCCV;
 	public int mMarcaInternacional; // mastercard, maestro, visa ...
 	public int mTipo; // oro platino clásica
-        public final int comisionMinima = 3;        
-        private static final Map<MarcaInternacional,Double> COMISIONES = new HashMap<MarcaInternacional,Double>();
-        static{
-            COMISIONES.put(MarcaInternacional.MasterCard,0.05);
-            COMISIONES.put(MarcaInternacional.Maestro,0.05);
-            COMISIONES.put(MarcaInternacional.VisaClasica,0.03);
-            COMISIONES.put(MarcaInternacional.VisaElectron,0.02);
-        }
+    public final int comisionMinima = 3;        
+    private static final Map<MarcaInternacional,Double> COMISIONES = new HashMap<MarcaInternacional,Double>();
+    static{
+    	COMISIONES.put(MarcaInternacional.MasterCard,0.05);
+    	COMISIONES.put(MarcaInternacional.Maestro,0.05);
+    	COMISIONES.put(MarcaInternacional.VisaClasica,0.03);
+    	COMISIONES.put(MarcaInternacional.VisaElectron,0.02);
+    }
+    private static final Map<TipoTarjeta,Integer> LIMITECREDITO = new HashMap<TipoTarjeta,Integer>();
+    static {
+    	LIMITECREDITO.put(TipoTarjeta.oro, 1000);
+    	LIMITECREDITO.put(TipoTarjeta.platino, 800);
+    	LIMITECREDITO.put(TipoTarjeta.clasica, 600);
+    }
 
 	public Credito(String numero, String titular, LocalDate fechacaducidad, double credito, int marcainternacional,
 			String nombreentidad, int ccv) {
@@ -46,22 +52,13 @@ public class Credito extends Tarjeta{
 	}
 
 	public double calcularCredito(int tipo) {
-		double credito;
-		switch (tipo) {
-		case 1: // oro
-			credito = 1000;
-			break;
-		case 2: // platino
-			credito = 800;
-			break;
-		case 3: // clasica
+		Integer credito;
+		
+		credito = LIMITECREDITO.get(mTipo);
+		if(credito == null) {
 			credito = 600;
-			break;
-		default:
-			credito = 600;
-			break;
 		}
-		return credito;
+		return credito.doubleValue();
 	}
 
 	public void retirar(double importe) throws IllegalArgumentException {
