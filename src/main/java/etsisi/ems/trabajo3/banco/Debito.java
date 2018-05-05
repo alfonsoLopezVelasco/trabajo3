@@ -8,16 +8,16 @@ public class Debito extends Tarjeta{
 		super(titular, fechaCaducidad, numero);
 	}
 
-	public void retirar(double x) throws Exception {
-		this.mCuentaAsociada.retirar("Retirada en cajero automático", x);
+	public void retirar(double importe) throws IllegalArgumentException {
+		this.mCuentaAsociada.retirar("Retirada en cajero automático", importe);
 	}
 
-	public void ingresar(double x) throws Exception {
-		this.mCuentaAsociada.ingresar("Ingreso en cajero automático", x);
+	public void ingresar(double importe) throws IllegalArgumentException {
+		this.mCuentaAsociada.ingresar("Ingreso en cajero automático", importe);
 	}
 
-	public void pagoEnEstablecimiento(String datos, double x) throws Exception {
-		this.mCuentaAsociada.retirar("Compra en :" + datos, x);
+	public void pagoEnEstablecimiento(String datos, double importe) throws IllegalArgumentException {
+		this.mCuentaAsociada.retirar("Compra en :" + datos, importe);
 	}
 
 	public double getSaldo() {
