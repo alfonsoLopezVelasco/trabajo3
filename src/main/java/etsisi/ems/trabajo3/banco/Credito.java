@@ -23,9 +23,9 @@ public class Credito extends Tarjeta{
     }
     private static final Map<TipoTarjeta,Integer> LIMITECREDITO = new HashMap<TipoTarjeta,Integer>();
     static {
-    	LIMITECREDITO.put(TipoTarjeta.oro, 1000);
-    	LIMITECREDITO.put(TipoTarjeta.platino, 800);
-    	LIMITECREDITO.put(TipoTarjeta.clasica, 600);
+    	LIMITECREDITO.put(TipoTarjeta.Oro, 1000);
+    	LIMITECREDITO.put(TipoTarjeta.Platino, 800);
+    	LIMITECREDITO.put(TipoTarjeta.Clasica, 600);
     }
 
 	public Credito(String numero, String titular, LocalDate fechacaducidad, double credito, int marcainternacional,
