@@ -11,8 +11,8 @@ public class Credito extends Tarjeta{
 	protected Vector<Movimiento> mMovimientos;
 	public String mNombreEntidad;
 	public int mCCV;
-	public int mMarcaInternacional; // mastercard, maestro, visa ...
-	public int mTipo; // oro platino clásica
+	public MarcaInternacional mMarcaInternacional;
+	public TipoTarjeta mTipo;
     public final int COMISIONMINIMA = 3;        
     private static final Map<MarcaInternacional,Double> COMISIONES = new HashMap<MarcaInternacional,Double>();
     static{
