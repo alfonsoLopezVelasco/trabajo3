@@ -1,13 +1,14 @@
 package etsisi.ems.trabajo3.banco;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Vector;
 
 public class GestorBusqueda {
 
 	
-	public static Vector<Movimiento> buscarMovimientos(Vector<Movimiento> movimientos, int mes, int anyo) {
-		Vector<Movimiento> movimientosFiltrados = new Vector<Movimiento>();
+	public static ArrayList<Movimiento> buscarMovimientos(ArrayList<Movimiento> movimientos, int mes, int anyo) {
+		ArrayList<Movimiento> movimientosFiltrados = new ArrayList<Movimiento>();
 		Iterator <Movimiento> iterador = movimientos.iterator();
 		while(iterador.hasNext()) {
 			Movimiento movimiento = iterador.next();

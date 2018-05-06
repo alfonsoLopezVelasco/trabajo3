@@ -1,70 +1,99 @@
 package etsisi.ems.trabajo3.banco;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Date;
-import java.util.Vector;
+import java.util.Iterator;
+import java.util.ArrayList;
 
 public class Cuenta {
-	protected String mNumero;
-	protected String mTitular;
-	protected Vector<Movimiento> mMovimientos;
-
+	private String mNumero;
+	private String mTitular;
+	private ArrayList<Movimiento> mMovimientos;
+	
 	public Cuenta(String numero, String titular) {
 		mNumero = numero;
 		mTitular = titular;
-		mMovimientos = new Vector<Movimiento>();
+		mMovimientos = new ArrayList<Movimiento>();
+	}
+
+	public String getMNumero() {
+		return mNumero;
+	}
+	
+	public void setMNumero(String mNumero) {
+		this.mNumero = mNumero;
+	}
+	
+	public String getMTitular() {
+		return mTitular;
+	}
+	
+	public void setMTitular(String mTitular) {
+		this.mTitular = mTitular;
+	}
+	
+	public ArrayList<Movimiento> getMMovimientos(){
+		return this.mMovimientos;
+	}
+	
+	public void setMMovimientos(ArrayList<Movimiento> mMovimientos) {
+		this.mMovimientos = mMovimientos;
 	}
 
 	public void ingresar(double importe) throws IllegalArgumentException {
-		if (importe <= 0)
+		if (importe <= 0) {
 			throw new IllegalArgumentException("No se puede ingresar una cantidad negativa");
+		}
 		Movimiento movimiento = new Movimiento("Ingreso en efectivo", importe);
-		this.mMovimientos.addElement(movimiento);
+		this.mMovimientos.add(movimiento);
 	}
 
 	public void retirar(double importe) throws IllegalArgumentException {
-		if (importe <= 0)
+		if (importe <= 0) {
 			throw new IllegalArgumentException("No se puede retirar una cantidad negativa");
-		if (getSaldo() < importe)
+		}
+		if (getSaldo() < importe) {
 			throw new IllegalArgumentException("Saldo insuficiente");
+		}
 
 		Movimiento movimiento = new Movimiento("Retirada de efectivo", -importe);
-		this.mMovimientos.addElement(movimiento);
-
+		this.mMovimientos.add(movimiento);
 	}
 
 	public void ingresar(String concepto, double importe) throws IllegalArgumentException {
-		if (importe <= 0)
+		if (importe <= 0) {
 			throw new IllegalArgumentException("No se puede ingresar una cantidad negativa");
+		}
 		Movimiento movimiento = new Movimiento(concepto, importe);
-		this.mMovimientos.addElement(movimiento);
+		this.mMovimientos.add(movimiento);
 	}
 
 	public void retirar(String concepto, double importe) throws IllegalArgumentException {
-		if (importe <= 0)
+		if (importe <= 0) {
 			throw new IllegalArgumentException("No se puede retirar una cantidad negativa");
-		if (getSaldo() < importe)
+		}
+		if (getSaldo() < importe) {
 			throw new IllegalArgumentException("Saldo insuficiente");
+		}
 
 		Movimiento movimiento = new Movimiento(concepto, -importe);
-		this.mMovimientos.addElement(movimiento);
+		this.mMovimientos.add(movimiento);
 	}
 
 	public double getSaldo() {
 		double saldo = 0.0;
-		for (int i = 0; i < this.mMovimientos.size(); i++) {
-			Movimiento movimiento = (Movimiento) mMovimientos.elementAt(i);
-			saldo += movimiento.getImporte();
+		
+		Iterator<Movimiento> iterator = mMovimientos.iterator();
+		while(iterator.hasNext()) {
+			saldo += iterator.next().getImporte();
 		}
+		
 		return saldo;
 	}
 
 	public void addMovimiento(Movimiento movimiento) {
-		mMovimientos.addElement(movimiento);
+		mMovimientos.add(movimiento);
 	}
 
-	public Vector<Movimiento> buscarMovimientos(int mes, int anyo) {
+	public ArrayList<Movimiento> buscarMovimientos(int mes, int anyo) {
 		return GestorBusqueda.buscarMovimientos(mMovimientos, mes, anyo);
 	}
 }
