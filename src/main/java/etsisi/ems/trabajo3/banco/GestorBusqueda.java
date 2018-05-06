@@ -2,7 +2,6 @@ package etsisi.ems.trabajo3.banco;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Vector;
 
 public class GestorBusqueda {
 

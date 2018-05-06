@@ -7,51 +7,51 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class Credito extends Tarjeta{
-	protected double mCredito;
-	protected Vector<Movimiento> mMovimientos;
-	public String mNombreEntidad;
-	public int mCCV;
-	public MarcaInternacional mMarcaInternacional;
-	public TipoTarjeta mTipo;
-    public final int COMISIONMINIMA = 3;        
-    private static final Map<MarcaInternacional,Double> COMISIONES = new HashMap<MarcaInternacional,Double>();
+	private double mCredito;
+	private Vector<Movimiento> mMovimientos;
+	private String mNombreEntidad;
+	private int mCCV;
+	private MarcaInternacional mMarca;
+	private TipoTarjeta mTipo;
+	private final int COMISIONMINIMA = 3;        
+	private static final Map<MarcaInternacional,Double> COMISIONES = new HashMap<MarcaInternacional,Double>();
+	private static final Map<TipoTarjeta,Integer> LIMITECREDITO = new HashMap<TipoTarjeta,Integer>();
+    
     static{
     	COMISIONES.put(MarcaInternacional.MasterCard,0.05);
     	COMISIONES.put(MarcaInternacional.Maestro,0.05);
     	COMISIONES.put(MarcaInternacional.VisaClasica,0.03);
     	COMISIONES.put(MarcaInternacional.VisaElectron,0.02);
-    }
-    private static final Map<TipoTarjeta,Integer> LIMITECREDITO = new HashMap<TipoTarjeta,Integer>();
-    static {
+    	
     	LIMITECREDITO.put(TipoTarjeta.Oro, 1000);
     	LIMITECREDITO.put(TipoTarjeta.Platino, 800);
     	LIMITECREDITO.put(TipoTarjeta.Clasica, 600);
     }
 
-	public Credito(String numero, String titular, LocalDate fechacaducidad, double credito, MarcaInternacional marcainternacional,
+	public Credito(String numero, String titular, LocalDate fechacaducidad, double credito, MarcaInternacional marca,
 			String nombreentidad, int ccv) {
 		super(titular, fechacaducidad, numero);
 		mCredito = credito;
 		mMovimientos = new Vector<Movimiento>();
-		mMarcaInternacional = marcainternacional;
+		this.mMarca = marca;
 		mNombreEntidad = nombreentidad;
 		mCCV = ccv;
 	}
 
 	
 	//Revisar que constructor es mas adecuado
-	public Credito(String numero, String titular, LocalDate fechacaducidad, TipoTarjeta tipo, MarcaInternacional marcainternacional,
+	public Credito(String numero, String titular, LocalDate fechacaducidad, TipoTarjeta tipo, MarcaInternacional mMarca,
 			String nombreentidad, int ccv) {
 		super(titular, fechacaducidad, numero);
 		mTipo = tipo;
-		mCredito = calcularCredito(mTipo);
+		mCredito = calcularCredito();
 		mMovimientos = new Vector<Movimiento>();
-		mMarcaInternacional = marcainternacional;
+		this.mMarca = mMarca;
 		mNombreEntidad = nombreentidad;
 		mCCV = ccv;
 	}
 
-	public double calcularCredito(TipoTarjeta tipo) {
+	public double calcularCredito() {
 		Integer credito;
 		
 		credito = LIMITECREDITO.get(mTipo);
@@ -64,7 +64,7 @@ public class Credito extends Tarjeta{
 	public void retirar(double importe) throws IllegalArgumentException {
 		Double comisiontarifa;
                 
-        comisiontarifa = COMISIONES.get(mMarcaInternacional);
+        comisiontarifa = COMISIONES.get(mMarca);
         if(comisiontarifa == null){
             comisiontarifa = 0.05;
         }
