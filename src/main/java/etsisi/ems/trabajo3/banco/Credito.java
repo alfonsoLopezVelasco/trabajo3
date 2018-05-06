@@ -13,7 +13,7 @@ public class Credito extends Tarjeta{
 	public int mCCV;
 	public int mMarcaInternacional; // mastercard, maestro, visa ...
 	public int mTipo; // oro platino clásica
-    public final int comisionMinima = 3;        
+    public final int COMISIONMINIMA = 3;        
     private static final Map<MarcaInternacional,Double> COMISIONES = new HashMap<MarcaInternacional,Double>();
     static{
     	COMISIONES.put(MarcaInternacional.MasterCard,0.05);
