@@ -1,6 +1,6 @@
 package etsisi.ems.trabajo3.banco;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class Credito extends Tarjeta{
 	private double mCredito;
-	private Vector<Movimiento> mMovimientos;
+	private ArrayList<Movimiento> mMovimientos;
 	private String mNombreEntidad;
 	private int mCCV;
 	private MarcaInternacional mMarca;
@@ -32,7 +32,7 @@ public class Credito extends Tarjeta{
 			String nombreentidad, int ccv) {
 		super(titular, fechacaducidad, numero);
 		mCredito = credito;
-		mMovimientos = new Vector<Movimiento>();
+		mMovimientos = new ArrayList<Movimiento>();
 		this.mMarca = marca;
 		mNombreEntidad = nombreentidad;
 		mCCV = ccv;
@@ -45,7 +45,7 @@ public class Credito extends Tarjeta{
 		super(titular, fechacaducidad, numero);
 		mTipo = tipo;
 		mCredito = calcularCredito();
-		mMovimientos = new Vector<Movimiento>();
+		mMovimientos = new ArrayList<Movimiento>();
 		this.mMarca = mMarca;
 		mNombreEntidad = nombreentidad;
 		mCCV = ccv;
@@ -69,21 +69,20 @@ public class Credito extends Tarjeta{
             comisiontarifa = 0.05;
         }
                 
-		// Añadimos una comisión de un 5% o 3% o 2%, mínimo de 3 euros.
 		double comision = (importe * comisiontarifa < COMISIONMINIMA ? COMISIONMINIMA : importe * comisiontarifa);
 		if (importe > getCreditoDisponible())
 			throw new IllegalArgumentException("Crédito insuficiente");
 		Movimiento movimiento = new Movimiento("Retirada en cuenta asociada (cajero automático)", (importe + comision));
-		mMovimientos.addElement(movimiento);
+		mMovimientos.add(movimiento);
 	}
 
 	// traspaso tarjeta a cuenta
 	public void ingresar(double importe) throws IllegalArgumentException {
-		double comision = (importe * 0.05 < COMISIONMINIMA ? COMISIONMINIMA : importe * 0.05); // Añadimos una comisión de un 5%, mínimo de 3 euros.
+		double comision = (importe * 0.05 < COMISIONMINIMA ? COMISIONMINIMA : importe * 0.05);
 		if (importe > getCreditoDisponible())
 			throw new IllegalArgumentException("Crédito insuficiente");
 		Movimiento movimiento = new Movimiento("Traspaso desde tarjeta a cuenta", importe);
-		mMovimientos.addElement(movimiento);
+		mMovimientos.add(movimiento);
 
 		mCuentaAsociada.ingresar("Traspaso desde tarjeta a cuenta", importe);
 		mCuentaAsociada.retirar("Comision Traspaso desde tarjeta a cuenta", comision);
@@ -91,13 +90,13 @@ public class Credito extends Tarjeta{
 
 	public void pagoEnEstablecimiento(String datos, double importe) throws Exception {
 		Movimiento movimiento = new Movimiento(("Compra a credito en : " + datos) , importe);
-		mMovimientos.addElement(movimiento);
+		mMovimientos.add(movimiento);
 	}
 
 	public double getSaldo() {
 		double saldo = 0.0;
 		for (int i = 0; i < this.mMovimientos.size(); i++) {
-			Movimiento movimiento = (Movimiento) mMovimientos.elementAt(i);
+			Movimiento movimiento = (Movimiento) mMovimientos.get(i);
 			saldo += movimiento.getImporte();
 		}
 		return saldo;
@@ -130,10 +129,6 @@ public class Credito extends Tarjeta{
 		}
 	}
 
-	// liquidación parcial sobre el total de los gastos realizados con esa tarjeta
-	// durante el mes/año de liquidación que consiste en lo siguiente:
-	// los gastos totales, incluida una comisión de 12%, se dividen en 3 cuotas a
-	// pagar en los 3 meses siguientes
 	public void liquidarPlazos(int mes, int anyo) throws IllegalArgumentException {
 		double importe = obtenerImporteALiquidar(mes, anyo) * 1.12;
 		if (importe != 0) {
