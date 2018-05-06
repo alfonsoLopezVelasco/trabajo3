@@ -16,52 +16,52 @@ public class Cuenta {
 		mMovimientos = new Vector<Movimiento>();
 	}
 
-	public void ingresar(double x) throws IllegalArgumentException {
-		if (x <= 0)
+	public void ingresar(double importe) throws IllegalArgumentException {
+		if (importe <= 0)
 			throw new IllegalArgumentException("No se puede ingresar una cantidad negativa");
-		Movimiento m = new Movimiento("Ingreso en efectivo", x);
-		this.mMovimientos.addElement(m);
+		Movimiento movimiento = new Movimiento("Ingreso en efectivo", importe);
+		this.mMovimientos.addElement(movimiento);
 	}
 
-	public void retirar(double x) throws IllegalArgumentException {
-		if (x <= 0)
+	public void retirar(double importe) throws IllegalArgumentException {
+		if (importe <= 0)
 			throw new IllegalArgumentException("No se puede retirar una cantidad negativa");
-		if (getSaldo() < x)
+		if (getSaldo() < importe)
 			throw new IllegalArgumentException("Saldo insuficiente");
 
-		Movimiento m = new Movimiento("Retirada de efectivo", -x);
-		this.mMovimientos.addElement(m);
+		Movimiento movimiento = new Movimiento("Retirada de efectivo", -importe);
+		this.mMovimientos.addElement(movimiento);
 
 	}
 
-	public void ingresar(String concepto, double x) throws IllegalArgumentException {
-		if (x <= 0)
+	public void ingresar(String concepto, double importe) throws IllegalArgumentException {
+		if (importe <= 0)
 			throw new IllegalArgumentException("No se puede ingresar una cantidad negativa");
-		Movimiento m = new Movimiento(concepto, x);
-		this.mMovimientos.addElement(m);
+		Movimiento movimiento = new Movimiento(concepto, importe);
+		this.mMovimientos.addElement(movimiento);
 	}
 
-	public void retirar(String concepto, double x) throws IllegalArgumentException {
-		if (x <= 0)
+	public void retirar(String concepto, double importe) throws IllegalArgumentException {
+		if (importe <= 0)
 			throw new IllegalArgumentException("No se puede retirar una cantidad negativa");
-		if (getSaldo() < x)
+		if (getSaldo() < importe)
 			throw new IllegalArgumentException("Saldo insuficiente");
 
-		Movimiento m = new Movimiento(concepto, -x);
-		this.mMovimientos.addElement(m);
+		Movimiento movimiento = new Movimiento(concepto, -importe);
+		this.mMovimientos.addElement(movimiento);
 	}
 
 	public double getSaldo() {
-		double r = 0.0;
+		double saldo = 0.0;
 		for (int i = 0; i < this.mMovimientos.size(); i++) {
-			Movimiento m = (Movimiento) mMovimientos.elementAt(i);
-			r += m.getImporte();
+			Movimiento movimiento = (Movimiento) mMovimientos.elementAt(i);
+			saldo += movimiento.getImporte();
 		}
-		return r;
+		return saldo;
 	}
 
-	public void addMovimiento(Movimiento m) {
-		mMovimientos.addElement(m);
+	public void addMovimiento(Movimiento movimiento) {
+		mMovimientos.addElement(movimiento);
 	}
 
 	public Vector<Movimiento> buscarMovimientos(int mes, int anyo) {
