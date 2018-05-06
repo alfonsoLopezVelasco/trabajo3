@@ -28,7 +28,7 @@ public class Credito extends Tarjeta{
     	LIMITECREDITO.put(TipoTarjeta.Clasica, 600);
     }
 
-	public Credito(String numero, String titular, LocalDate fechacaducidad, double credito, int marcainternacional,
+	public Credito(String numero, String titular, LocalDate fechacaducidad, double credito, MarcaInternacional marcainternacional,
 			String nombreentidad, int ccv) {
 		super(titular, fechacaducidad, numero);
 		mCredito = credito;
@@ -40,7 +40,7 @@ public class Credito extends Tarjeta{
 
 	
 	//Revisar que constructor es mas adecuado
-	public Credito(String numero, String titular, LocalDate fechacaducidad, int tipo, int marcainternacional,
+	public Credito(String numero, String titular, LocalDate fechacaducidad, TipoTarjeta tipo, MarcaInternacional marcainternacional,
 			String nombreentidad, int ccv) {
 		super(titular, fechacaducidad, numero);
 		mTipo = tipo;
@@ -51,7 +51,7 @@ public class Credito extends Tarjeta{
 		mCCV = ccv;
 	}
 
-	public double calcularCredito(int tipo) {
+	public double calcularCredito(TipoTarjeta tipo) {
 		Integer credito;
 		
 		credito = LIMITECREDITO.get(mTipo);
